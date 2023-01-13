@@ -1,17 +1,25 @@
 var c = document.getElementById("mainCanvas");
 var ctx = c.getContext("2d");
 
-var moveX = 50;
+// declares variables and values
+var moveX = 200;
 var moveY = 50;
 
-var moveX2 = 1050;
-var moveY2 = 600;
+var moveX2 = 50;
+var moveY2 = 50;
+
+var rectEdgeL;
+var rectEdgeT;
+
+var rect2EdgeL;
+var rect2EdgeT;
+
 var dir = "right";
 
 
 // attracts the attention of the computer, to notify if key is pressed
 window.addEventListener("keydown", keysPressed);
-window.addEventListener("keyup", keysPressed);
+//window.addEventListener("keyup", keysPressed);
 
 
 
@@ -47,22 +55,21 @@ function drawRectangle(x, y, width, height)
   var r = Math.floor(Math.random() * 255);
   var g = Math.floor(Math.random() * 255);
   var b = Math.floor(Math.random() * 255);
-  ctx.fillStyle = "rgba(0, 255, 0, .5)";
+  ctx.fillStyle = "rgba(r, g, b, .5)";
 }
 
 function animate()
 {
-  ctx.clearRect(0,0,c.width,c.height);
-
+  ctx.clearRect(rectEdgeL, rectEdgeT, 40, 40);
+  ctx.clearRect(rect2EdgeL, rect2EdgeT, 40, 40);
+  
   rectEdgeL = moveX - 20;
   rectEdgeT = moveY - 20;
-
   rect2EdgeL = moveX2 - 20;
   rect2EdgeT = moveY2 - 20;
 
   drawRectangle(rectEdgeL, rectEdgeT, 40, 40);
   drawRectangle(rect2EdgeL, rect2EdgeT, 40, 40);
-  bounceRect();
 
   requestAnimationFrame(animate);
   console.log("requestAnimationFrame called");
@@ -70,37 +77,41 @@ function animate()
 
 function bounceRect()
 {
-  var x = 10;
+  var x = 100;
   var y = 100;
   var speed = 25;
-  ctx.fillRect(100,100, 50,50);
-  ctx.fillStyle = "orange";
+  drawRectangle(x,y,20,20);
   const id = setInterval(() =>
   {
     // clear the canvas to draw new rectangle (creates movement illusion)
-    ctx.clearRect(0,0,c.width, c.height);
+    ctx.clearRect(x,y,20, 20);
     if (dir == "right"){
       x+= speed;
-      ctx.fillRect(x,y,50,50);
+      drawRectangle(x,y,20,20);
     }
     if (dir == "left") {
       x -= speed;
-      ctx.fillRect(x,y,50,50);
+      drawRectangle(x,y,20,20);
     }
     if (dir == "up") {
       y -= speed;
-      ctx.fillRect(x,y,50,50);
+      drawRectangle(x,y,20,20);
     }
     if (dir == "down") {
       y += speed;
-      ctx.fillRect(x,y,50,50);
+      drawRectangle(x,y,20,20);
     }
+    if (x >= c.width) {dir = "left";}
+    if (x <= 0) {dir = "right";}
+    if (y <= 0) {dir = "down";}
+    if (y >= c.height) {dir = "up";}
 
-  }, 25);
+  }, 75);
 }
 
 function doStuff(){
-  //bounceRect();
+
   animate();
+  bounceRect();
   
 }
