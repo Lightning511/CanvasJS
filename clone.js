@@ -1,6 +1,8 @@
 var c = document.getElementById("mainCanvas");
 var ctx = c.getContext("2d");
 
+var ik = null;
+
 // class to create clone instances of bouncing rectangle
 class clone {
 
@@ -24,7 +26,7 @@ class clone {
             if(rectEdgeT < this.y < rectEdgeB || rectEdgeT< this.y+20 < rectEdgeB)
             {
                 cancelAnimationFrame(animate);
-                clearInterval(id);
+                clearInterval(ik);
             }
         }
         if(rectEdgeT < this.y-20 <rectEdgeB || rectEdgeT < this.y < rectEdgeB)
@@ -32,7 +34,7 @@ class clone {
             if(rectEdgeL < this.x < rectEdgeR || rectEdgeL< this.x+20 < rectEdgeR)
             {
                 cancelAnimationFrame(animate);
-                clearInterval(id);
+                clearInterval(ik);
             }
         }
         if(rect2EdgeL < this.x+20 <rect2EdgeR || rect2EdgeL < this.x < rect2EdgeR)
@@ -40,7 +42,7 @@ class clone {
             if(rect2EdgeT < this.y < rect2EdgeB || rect2EdgeT< this.y+20 < rect2EdgeB)
             {
                 cancelAnimationFrame(animate);
-                clearInterval(id);
+                clearInterval(ik);
             }
         }
         if(rect2EdgeT < this.y-20 <rect2EdgeB || rect2EdgeT < this.y < rect2EdgeB)
@@ -48,14 +50,14 @@ class clone {
             if(rect2EdgeL < this.x < rect2EdgeR || rect2EdgeL< this.x+20 < rect2EdgeR)
             {
                 cancelAnimationFrame(animate);
-                clearInterval(id);
+                clearInterval(ik);
             }
         }
     }
 
     
     bounceClone(){
-        const id = setInterval(() =>
+        ik = setInterval(() =>
         {
             // clear the canvas to draw new rectangle (creates movement illusion)
             // ctx.clearRect(this.x,this.y, 30, 30);

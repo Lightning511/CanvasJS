@@ -18,6 +18,11 @@ var rect2EdgeT;
 var rect2EdgeR;
 var rect2EdgeB;
 
+var id = null;
+
+var score1 = 0;
+var score2 = 0;
+
 
 var dir = "right";
 // array for the speed and dir to randomize clone movement
@@ -63,6 +68,12 @@ function restartGame(e)
   var keys = e.keyCode;
   if(keys == 82)
   {
+    ctx.clearRect(0,0,c.width,c.height);
+    window.clearInterval(id);
+    moveX = 900;
+    moveY = 280;
+    moveX2 = 300;
+    moveY2 = 280;
     doStuff();
   }
 }
@@ -73,7 +84,7 @@ function drawMover1(rectEdgeL, rectEdgeT)
   ctx.fillRect(rectEdgeL, rectEdgeT, 40, 40);
   ctx.strokeStyle = "#000000";
   ctx.strokeRect(rectEdgeL, rectEdgeT, 40, 40);
-  console.log("red");
+  //console.log("red");
 }
 // draws the second movable square to be controlled by user
 function drawMover2(rect2EdgeL, rect2EdgeT)
@@ -82,14 +93,14 @@ function drawMover2(rect2EdgeL, rect2EdgeT)
   ctx.fillRect(rect2EdgeL, rect2EdgeT, 40, 40);
   ctx.strokeStyle = "#000000";
   ctx.strokeRect(rect2EdgeL, rect2EdgeT, 40, 40);
-  console.log("blue");
+  //console.log("blue");
 }
 // draws bouncing rectangle that creates clones as it hits the walls of the canvas
 function drawBouncingRect(x, y)
 {
-  ctx.fillStyle = "#000000";
+  ctx.fillStyle = "#F00000";
   ctx.fillRect(x, y, 20, 20);
-  console.log("black");
+  //console.log("black");
 }
 // animates the entire canvas and code 
 function animate()
@@ -97,8 +108,10 @@ function animate()
   //ctx.clearRect(rectEdgeL, rectEdgeT, 40, 40);
   //ctx.clearRect(rect2EdgeL, rect2EdgeT, 40, 40);
   
+  //left player
   rectEdgeL = moveX - 20;
   rectEdgeT = moveY - 20;
+  //right player
   rect2EdgeL = moveX2 - 20;
   rect2EdgeT = moveY2 - 20;
 
@@ -110,22 +123,45 @@ function animate()
   drawMover2(rect2EdgeL, rect2EdgeT);
 
   requestAnimationFrame(animate);
-  console.log("requestAnimationFrame called");
+  //console.log("requestAnimationFrame called");
 }
 
-function checkCollision(x, y)
+function checkCollision1(x, y)
 {
+  console.log("called");
   rectEdgeR = rectEdgeL + 40;
   rectEdgeB = rectEdgeT - 40;
+  xb = x+20;
+  yb = y+20
+
+  if(x >= rectEdgeL && x <= rectEdgeR && y <= rectEdgeB && y >= rectEdgeT) {console.log("collided");return true;}
+  if(xb >= rectEdgeL && xb <= rectEdgeR && yb <= rectEdgeB && yb >= rectEdgeT) {console.log("collided");return true;}
+  else { return false;}
+}
+
+function checkCollision2(x, y)
+{
+  console.log("called2");
   rect2EdgeR = rect2EdgeL + 40;
   rect2EdgeB = rect2EdgeT - 40;
+  var xb = x+20;
+  var yb = y+20
+
+  if(x >= rect2EdgeL && x <= rect2EdgeR && y <= rect2EdgeB && y >= rect2EdgeT) {console.log("collided");return true;}
+  if(xb >= rect2EdgeL && xb <= rect2EdgeR && yb <= rect2EdgeB && yb >= rect2EdgeT) {console.log("collided");return true;}
+  else { return false;}
+}
+/*
+  rect2EdgeR = rect2EdgeL + 40;
+  rect2EdgeB = rect2EdgeT - 40;
+  console.log("yes");
 
   if(rectEdgeL < x+20 <rectEdgeR || rectEdgeL < x < rectEdgeR)
   {
     if(rectEdgeT < y < rectEdgeB || rectEdgeT< y+20 < rectEdgeB)
     {
       cancelAnimationFrame(animate);
-      //clearInterval(period);
+      clearInterval(id);
     }
   }
   if(rectEdgeT < y-20 <rectEdgeB || rectEdgeT < y < rectEdgeB)
@@ -133,7 +169,7 @@ function checkCollision(x, y)
     if(rectEdgeL < x < rectEdgeR || rectEdgeL< x+20 < rectEdgeR)
     {
       cancelAnimationFrame(animate);
-      //clearInterval(period);
+      clearInterval(id);
     }
   }
   if(rect2EdgeL < x+20 <rect2EdgeR || rect2EdgeL < x < rect2EdgeR)
@@ -141,7 +177,7 @@ function checkCollision(x, y)
     if(rect2EdgeT < y < rect2EdgeB || rect2EdgeT< y+20 < rect2EdgeB)
     {
       cancelAnimationFrame(animate);
-      //clearInterval(period);
+      clearInterval(id);
     }
   }
   if(rect2EdgeT < y-20 <rect2EdgeB || rect2EdgeT < y < rect2EdgeB)
@@ -149,12 +185,12 @@ function checkCollision(x, y)
     if(rect2EdgeL < x < rect2EdgeR || rect2EdgeL< x+20 < rect2EdgeR)
     {
       cancelAnimationFrame(animate);
-      //clearInterval(period);
+      clearInterval(id);
     }
   }
 
 }
-
+*/
 function bounceRect()
 {
   var x = 100;
@@ -162,7 +198,7 @@ function bounceRect()
   var speed = 25;
   var angle = 150;
   drawBouncingRect(x,y);
-  const id = setInterval(() =>
+  id = setInterval(() =>
   {
     // clear the canvas to draw new rectangle (creates movement illusion)
     ctx.clearRect(0,0,c.width, c.height);
@@ -170,29 +206,79 @@ function bounceRect()
       var angleRad = angle * (Math.PI/180);
       x+= speed * Math.cos(angleRad);
       y-= speed * Math.sin(angleRad);
+      console.log("x " + x);
+      console.log("y " + y);
       drawBouncingRect(x,y);
-      checkCollision(x,y);
+      console.log("here1");
+      if(checkCollision1(x,y))
+      {
+        console.log("collision");
+        score2 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
+      if(checkCollision2(x,y))
+      {
+        console.log("collision");
+        score1 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
     }
-    if (dir == "left") {
+    else if (dir == "left") {
       var angleRad = angle * (Math.PI/180);
       x-= speed * Math.cos(angleRad);
       y+= speed * Math.sin(angleRad);
       drawBouncingRect(x,y);
-      checkCollision(x,y);
+      console.log("here2");
+      if(checkCollision1(x,y))
+      {
+        console.log("collision");
+        score2 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
+      if(checkCollision2(x,y))
+      {
+        console.log("collision");
+        score1 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
     }
-    if (dir == "up") {
+    else if (dir == "up") {
       var angleRad = angle * (Math.PI/180);
       x-= speed * Math.cos(angleRad);
       y-= speed * Math.sin(angleRad);
       drawBouncingRect(x,y);
-      checkCollision(x,y);
+      console.log("here3");
+      if(checkCollision1(x,y))
+      {
+        console.log("collision");
+        score2 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
+      if(checkCollision2(x,y))
+      {
+        console.log("collision");
+        score1 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
     }
-    if (dir == "down") {
+    else if (dir == "down") {
       var angleRad = angle * (Math.PI/180);
       x+= speed * Math.cos(angleRad);
       y+= speed * Math.sin(angleRad);
       drawBouncingRect(x,y);
-      checkCollision(x,y);
+      console.log("here4");
+      if(checkCollision1(x,y))
+      {
+        console.log("collision");
+        score2 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
+      if(checkCollision2(x,y))
+      {
+        console.log("collision");
+        score1 += 1;
+        window.alert("Round Over. Player 1: " + score1 + " Player 2: " + score2 + " \nPress r to begin new round.");
+      }
     }
     if (x >= c.width-10) {
       dir = "left";
@@ -201,7 +287,7 @@ function bounceRect()
       var cloneSpeed = speeds[Math.floor(Math.random() * 4)]
       var C = new clone(x,y, cloneSpeed, cloneDir);
       C.bounceClone();
-      C.checkCollision();
+      //C.checkCollision();
     }
     if (x <= 10) {
       dir = "right";
@@ -210,7 +296,7 @@ function bounceRect()
       var cloneSpeed = speeds[Math.floor(Math.random() * 4)]
       var C = new clone(x,y, cloneSpeed, cloneDir);
       C.bounceClone();
-      C.checkCollision();
+      //C.checkCollision();
     }
     if (y <= 10) {
       dir = "down";
@@ -219,7 +305,7 @@ function bounceRect()
       var cloneSpeed = speeds[Math.floor(Math.random() * 4)]
       var C = new clone(x,y, cloneSpeed, cloneDir);
       C.bounceClone();
-      C.checkCollision();
+      //C.checkCollision();
     }
     if (y >= c.height-10) {
       dir = "up";
@@ -228,14 +314,14 @@ function bounceRect()
       var cloneSpeed = speeds[Math.floor(Math.random() * 4)]
       var C = new clone(x,y, cloneSpeed, cloneDir);
       C.bounceClone();
-      C.checkCollision();
+     // C.checkCollision();
   }
 
   }, 75);
 }
 
 function doStuff(){
-
+  window.alert("2 Player Game where each player tries to move their square and avoid being hit by the cloning black squares.")
   animate();
   bounceRect();
   
